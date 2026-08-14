@@ -1,7 +1,11 @@
-import pygame
-from constants import SCREEN_HEIGHT, SCREEN_WIDTH
-from logger import log_state
+import pygame, sys
+from constants import *
+from logger import log_state, log_event
 from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
+from shot import Shot
+
 
 
 def main():
@@ -16,12 +20,17 @@ def main():
     # 1. Create the groups first
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
 
     # 2. Assign containers to the class BEFORE instantiating objects
     Player.containers = (updatable, drawable)
-
+    Asteroid.containers = (asteroids, updatable, drawable)
+    AsteroidField.containers = (updatable)
+    Shot.containers = (shots, updatable, drawable)
     # 3. Instantiate game objects (now automatically added to containers)
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    AsteroidField()
 
     dt = 0.0
 
@@ -34,6 +43,12 @@ def main():
 
         # 4. Update game state first
         updatable.update(dt)
+        for asteroid in asteroids:
+            if player.collides_with(asteroid):
+                log_event("player_hit")
+                print("Game over!")
+                sys.exit()
+                return
 
         # 5. Render/Draw second
         screen.fill("black")
