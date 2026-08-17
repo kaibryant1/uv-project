@@ -43,8 +43,17 @@ def main():
 
         # 4. Update game state first
         updatable.update(dt)
+
+        for shot in shots:
+            for astewwwwwwwwroid in asteroids:
+                if shot.collides_with(asteroid):
+                    log_event("asteroid_shot")
+                    asteroid.kill()
+                    shot.kill()
+
+
         for asteroid in asteroids:
-            if player.collides_with(asteroid):
+            if player.collides_with(asteroid):  
                 log_event("player_hit")
                 print("Game over!")
                 sys.exit()
